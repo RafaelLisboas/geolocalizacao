@@ -3,342 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Acesso</title>
+    <title>Compartilhar Localização por Email</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        .page-section {
-            display: none; /* Todas as seções ocultas por defeito */
-            min-height: 100vh;
-            width: 100%;
+        .btn-primary {
+            background-color: #4F46E5; /* Indigo-600 */
+            color: white;
         }
-        .page-section.active {
-            display: flex; /* Mostrar a seção ativa */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .btn-primary:hover {
+            background-color: #4338CA; /* Indigo-700 */
         }
-        /* Estilos específicos para o dashboard não centralizado verticalmente */
-        #dashboardSection.active {
-            justify-content: flex-start;
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            max-width: 90%;
+            text-align: center;
         }
-
-        .error-message {
-            display: none;
-            padding: 0.75rem;
-            margin-top: 1rem;
-            border-radius: 0.375rem;
-            background-color: #fee2e2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
-            font-size: 0.875rem;
+        .toast.show {
+            opacity: 1;
         }
-        #forceChangePasswordSection .error-message {
-             margin-top: 0.5rem;
-             margin-bottom: 1rem;
+        .toast.success {
+            background-color: #10B981; /* Emerald-500 */
+            color: white;
         }
-
-        /* Efeito de hover sutil nos cards do dashboard */
-        .card-link:hover .card-content {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-        .card-link .card-content {
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        .toast.error {
+            background-color: #EF4444; /* Red-500 */
+            color: white;
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
 
-    <!-- SEÇÃO DE LOGIN -->
-    <div id="loginSection" class="page-section bg-gray-100">
-        <div class="bg-white p-8 md:p-12 rounded-xl shadow-2xl w-full max-w-md">
-            <div class="text-center mb-8">
-                <svg class="mx-auto h-12 w-auto text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                </svg>
-                <h2 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">Acesse sua Conta</h2>
-                <p class="mt-2 text-sm text-gray-600">Bem-vindo!</p>
-            </div>
-            <div id="loginErrorMessage" class="error-message"></div>
-            <form id="loginForm" class="space-y-6">
-                <div>
-                    <label for="loginUsuario" class="block text-sm font-medium leading-6 text-gray-900">Usuário</label>
-                    <div class="mt-2">
-                        <input id="loginUsuario" name="loginUsuario" type="text" autocomplete="username" required class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition duration-150 ease-in-out" placeholder="admin">
-                    </div>
-                </div>
-                <div>
-                    <div class="flex items-center justify-between">
-                        <label for="loginSenha" class="block text-sm font-medium leading-6 text-gray-900">Senha</label>
-                        <div class="text-sm"><a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Esqueceu a senha?</a></div>
-                    </div>
-                    <div class="mt-2">
-                        <input id="loginSenha" name="loginSenha" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition duration-150 ease-in-out" placeholder="admin">
-                    </div>
-                </div>
-                <div>
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition duration-150 ease-in-out">Entrar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-center">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Compartilhar Localização</h1>
+            <p class="text-gray-600 mt-2">Clique no botão abaixo para obter sua localização e preparar um e-mail para envio.</p>
+        </header>
 
-    <!-- SEÇÃO DE MUDANÇA DE SENHA FORÇADA -->
-    <div id="forceChangePasswordSection" class="page-section bg-gray-100">
-        <div class="bg-white p-8 md:p-12 rounded-xl shadow-2xl w-full max-w-md">
-            <div class="text-center mb-6">
-                <svg class="mx-auto h-12 w-auto text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 117.5 4.063M13.5 10.5H21A2.25 2.25 0 0123.25 12.75v9A2.25 2.25 0 0121 24H3a2.25 2.25 0 01-2.25-2.25v-9A2.25 2.25 0 013 12.75h7.5m0-2.25V6.75a4.5 4.5 0 10-9 0v3.75m9-.75H3.375A2.25 2.25 0 001.125 12.75v9A2.25 2.25 0 003.375 24h17.25A2.25 2.25 0 0023.25 21.75v-9A2.25 2.25 0 0020.625 10.5H13.5zM13.5 10.5V6.75" />
-                </svg>
-                <h2 class="mt-4 text-2xl font-bold tracking-tight text-gray-900">Defina sua Nova Senha</h2>
-                <p class="mt-1 text-sm text-gray-600">Por segurança, você precisa criar uma nova senha.</p>
-            </div>
-            <div id="changePasswordErrorMessage" class="error-message"></div>
-            <form id="changePasswordForm" class="space-y-4">
-                <div>
-                    <label for="newPassword" class="block text-sm font-medium leading-6 text-gray-900">Nova Senha</label>
-                    <div class="mt-1">
-                        <input id="newPassword" name="newPassword" type="password" required class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition duration-150 ease-in-out">
-                    </div>
-                </div>
-                <div>
-                    <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-900">Confirmar Nova Senha</label>
-                    <div class="mt-1">
-                        <input id="confirmPassword" name="confirmPassword" type="password" required class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition duration-150 ease-in-out">
-                    </div>
-                </div>
-                <div class="pt-2">
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition duration-150 ease-in-out">Salvar Nova Senha</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- SEÇÃO DO DASHBOARD -->
-    <div id="dashboardSection" class="page-section bg-gray-100">
-        <nav class="bg-white shadow-md w-full fixed top-0 z-50">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="flex h-16 items-center justify-between">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 text-indigo-600">
-                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-8 w-8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
-                            </svg>
-                        </div>
-                        <div class="ml-4"><h1 class="text-xl font-semibold text-gray-800">Painel de Planilhas</h1></div>
-                    </div>
-                    <div>
-                        <button id="logoutButton" type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sair</button>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <main class="py-10 w-full max-w-7xl px-4 sm:px-6 lg:px-8 mt-16"> {/* mt-16 para compensar altura do nav */}
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold leading-tight text-gray-900">Acesso Rápido às Planilhas</h2>
-                <p class="mt-1 text-sm text-gray-600">Clique num cartão para abrir a planilha correspondente.</p>
-            </div>
-            <div id="cardsGrid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                <!-- Os cartões serão gerados por JavaScript -->
-            </div>
+        <main>
+            <button id="startButton" class="w-full btn-primary font-semibold py-3 px-6 rounded-lg text-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                Iniciar e Enviar Localização
+            </button>
+            <p id="statusMessage" class="mt-6 text-sm text-gray-500 min-h-[20px]"></p>
         </main>
-        <footer class="py-8 text-center w-full mt-auto">
-            <p class="text-sm text-gray-500">&copy; 2024 Seu Nome/Empresa. Todos os direitos reservados.</p>
+
+        <footer class="mt-8 border-t pt-4">
+            <p class="text-xs text-gray-500">
+                <strong>Importante:</strong> Você precisará editar o código para definir o endereço de e-mail de destino.
+                Procure por <code class="bg-gray-200 px-1 rounded">seuemail@example.com</code> no script.
+            </p>
         </footer>
     </div>
 
+    <div id="toast" class="toast"></div>
+
     <script>
-        // --- Constantes e Elementos do DOM ---
-        const loginSection = document.getElementById('loginSection');
-        const forceChangePasswordSection = document.getElementById('forceChangePasswordSection');
-        const dashboardSection = document.getElementById('dashboardSection');
-
-        const loginForm = document.getElementById('loginForm');
-        const loginUsuarioInput = document.getElementById('loginUsuario');
-        const loginSenhaInput = document.getElementById('loginSenha');
-        const loginErrorMessageDiv = document.getElementById('loginErrorMessage');
-
-        const changePasswordForm = document.getElementById('changePasswordForm');
-        const newPasswordInput = document.getElementById('newPassword');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        const changePasswordErrorMessageDiv = document.getElementById('changePasswordErrorMessage');
-        
-        const logoutButton = document.getElementById('logoutButton');
-        const cardsGrid = document.getElementById('cardsGrid');
-
-        const defaultAdminUser = "admin";
-        const defaultAdminPass = "admin";
-
-        // --- Funções de Controlo de Visibilidade ---
-        function showSection(sectionId) {
-            [loginSection, forceChangePasswordSection, dashboardSection].forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
+        // Função para mostrar notificações (toast)
+        function showToast(message, type = 'success', duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`; // Adiciona a classe do tipo e 'show'
+            setTimeout(() => {
+                toast.className = 'toast'; // Remove 'show' para esconder
+            }, duration);
         }
 
-        // --- Lógica de Autenticação e Navegação ---
-        function checkAuthState() {
-            const currentUserForChange = localStorage.getItem('currentUserForPasswordChange');
-            const userDataString = localStorage.getItem('userData');
-            let storedUserData = null;
+        // Seleciona os elementos do DOM
+        const startButton = document.getElementById('startButton');
+        const statusMessage = document.getElementById('statusMessage');
 
-            if (userDataString) {
-                try {
-                    storedUserData = JSON.parse(userDataString);
-                } catch (e) {
-                    console.error("Erro ao analisar userData do localStorage:", e);
-                    localStorage.removeItem('userData'); // Limpar dados corrompidos
-                }
+        // Adiciona o listener de evento ao botão
+        startButton.addEventListener('click', () => {
+            statusMessage.textContent = 'Obtendo localização...';
+            startButton.disabled = true;
+            startButton.classList.remove('btn-primary');
+            startButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+
+
+            // Verifica se a geolocalização é suportada pelo navegador
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
+                    enableHighAccuracy: true, // Tenta obter a localização mais precisa
+                    timeout: 10000, // Tempo máximo para obter a localização (10 segundos)
+                    maximumAge: 0 // Não usa cache de localização
+                });
+            } else {
+                const errorMsg = 'Geolocalização não é suportada por este navegador.';
+                statusMessage.textContent = errorMsg;
+                showToast(errorMsg, 'error');
+                resetButtonState();
             }
+        });
+
+        // Função chamada quando a localização é obtida com sucesso
+        function successCallback(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy; // Precisão em metros
+
+            statusMessage.textContent = `Localização obtida: Lat ${latitude.toFixed(5)}, Lon ${longitude.toFixed(5)} (Precisão: ${accuracy.toFixed(0)}m)`;
+            showToast('Localização obtida! Preparando e-mail...', 'success');
+
+            // **IMPORTANTE: Altere 'seuemail@example.com' para o endereço de e-mail de destino desejado.**
+            const emailDestino = 'seuemail@example.com';
+            const emailAssunto = 'Minha Localização Atual';
+            const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+            const emailCorpo = `Olá,\n\nMinha localização atual é:\nLatitude: ${latitude}\nLongitude: ${longitude}\nPrecisão: Aproximadamente ${accuracy.toFixed(0)} metros.\n\nLink para o Google Maps:\n${googleMapsLink}\n\nAtenciosamente.`;
+
+            // Cria o link mailto e simula um clique para abrir o cliente de e-mail
+            const mailtoLink = `mailto:${emailDestino}?subject=${encodeURIComponent(emailAssunto)}&body=${encodeURIComponent(emailCorpo)}`;
             
-            if (currentUserForChange) {
-                showSection('forceChangePasswordSection');
-            } else if (storedUserData && storedUserData.passwordChanged) {
-                // Verifica se o usuário logado é o que está no localStorage e se a senha foi alterada
-                // Para uma SPA real, você teria uma sessão ou token para verificar
-                showSection('dashboardSection');
-                renderDashboardCards();
-            } else {
-                showSection('loginSection');
-            }
+            // Abre o cliente de e-mail
+            window.location.href = mailtoLink;
+
+            // Adiciona um pequeno atraso antes de redefinir o botão para dar tempo ao cliente de e-mail abrir
+            setTimeout(() => {
+                statusMessage.textContent = 'Cliente de e-mail deve ter sido aberto. Verifique e envie o e-mail.';
+                resetButtonState();
+            }, 2000);
         }
 
-        // --- Lógica do Formulário de Login ---
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const usuario = loginUsuarioInput.value.trim();
-            const senha = loginSenhaInput.value.trim();
-            loginErrorMessageDiv.style.display = 'none';
-
-            let storedUserData = null;
-            const userDataString = localStorage.getItem('userData');
-            if (userDataString) {
-                try {
-                    storedUserData = JSON.parse(userDataString);
-                } catch (e) {
-                    console.error("Erro ao analisar userData do localStorage:", e);
-                }
+        // Função chamada em caso de erro ao obter a localização
+        function errorCallback(error) {
+            let errorMessage = 'Ocorreu um erro ao obter a localização: ';
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage += 'Permissão para Geolocalização negada.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage += 'Informação de localização indisponível.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage += 'A requisição para obter a localização expirou.';
+                    break;
+                case error.UNKNOWN_ERROR:
+                    errorMessage += 'Um erro desconhecido ocorreu.';
+                    break;
             }
-
-            if (usuario === defaultAdminUser && senha === defaultAdminPass) {
-                if (storedUserData && storedUserData.username === defaultAdminUser && storedUserData.passwordChanged) {
-                    loginErrorMessageDiv.textContent = "Credenciais padrão 'admin/admin' já não são válidas. Use a sua nova senha.";
-                    loginErrorMessageDiv.style.display = 'block';
-                } else {
-                    localStorage.setItem('currentUserForPasswordChange', defaultAdminUser);
-                    checkAuthState(); // Atualiza a seção visível
-                }
-            } else if (storedUserData && usuario === storedUserData.username && senha === storedUserData.password) {
-                if (storedUserData.passwordChanged) {
-                    localStorage.removeItem('currentUserForPasswordChange');
-                    checkAuthState(); // Atualiza a seção visível
-                } else {
-                    localStorage.setItem('currentUserForPasswordChange', usuario);
-                    checkAuthState();
-                }
-            } else {
-                loginErrorMessageDiv.textContent = "Utilizador ou senha inválidos. Por favor, tente novamente.";
-                loginErrorMessageDiv.style.display = 'block';
-            }
-        });
-
-        // --- Lógica do Formulário de Mudança de Senha ---
-        changePasswordForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const newPassword = newPasswordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
-            changePasswordErrorMessageDiv.style.display = 'none';
-
-            if (newPassword.length < 6) {
-                changePasswordErrorMessageDiv.textContent = "A nova senha deve ter pelo menos 6 caracteres.";
-                changePasswordErrorMessageDiv.style.display = 'block';
-                return;
-            }
-            if (newPassword !== confirmPassword) {
-                changePasswordErrorMessageDiv.textContent = "As senhas não coincidem. Tente novamente.";
-                changePasswordErrorMessageDiv.style.display = 'block';
-                return;
-            }
-
-            const currentUser = localStorage.getItem('currentUserForPasswordChange');
-            if (currentUser) {
-                const updatedUserData = {
-                    username: currentUser,
-                    password: newPassword,
-                    passwordChanged: true
-                };
-                localStorage.setItem('userData', JSON.stringify(updatedUserData));
-                localStorage.removeItem('currentUserForPasswordChange');
-                checkAuthState(); // Atualiza para mostrar o dashboard
-            } else {
-                changePasswordErrorMessageDiv.textContent = "Erro: Utilizador para alteração de senha não encontrado. Tente fazer login novamente.";
-                changePasswordErrorMessageDiv.style.display = 'block';
-            }
-        });
-        
-        // --- Lógica do Dashboard ---
-        function renderDashboardCards() {
-            cardsGrid.innerHTML = ''; // Limpar cartões existentes
-            const cardData = [
-                { title: "Planilha de Vendas Q1", description: "Relatório trimestral de vendas e metas.", icon: `<svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>`, bgColor: 'bg-indigo-100', link: "#" },
-                { title: "Controlo de Stock", description: "Níveis de inventário e próximos pedidos.", icon: `<svg class="h-6 w-6 text-sky-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m9.75 11.375c.621 0 1.125-.504 1.125-1.125V6.375c0-.621-.504-1.125-1.125-1.125H18M11.25 12h3.375m-3.375 0c.621 0 1.125.504 1.125 1.125v3.375c0 .621-.504 1.125-1.125 1.125h-3.375a1.125 1.125 0 01-1.125-1.125v-3.375c0-.621.504-1.125 1.125-1.125h3.375z" /></svg>`, bgColor: 'bg-sky-100', link: "#" },
-                { title: "Marketing ROI", description: "Análise de campanhas e retorno.", icon: `<svg class="h-6 w-6 text-amber-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.227-.1.464-.1.714v1.428a1.123 1.123 0 001.123 1.123h2.144c.269 0 .52-.043.768-.126M11.35 3.836C10.082 2.985 8.614 2.25 7.02 2.25 5.76 2.25 4.632 2.604 3.75 3.25m7.6 13.25c1.268.951 2.736 1.674 4.33 1.674 1.26 0 2.388-.354 3.266-1M11.35 3.836c1.268-.951 2.736-1.674 4.33-1.674 1.26 0 2.388.354 3.266 1m-3.266 13.25l2.144-2.144m0 0c.083-.248.126-.5.126-.768V12.75a1.123 1.123 0 00-1.123-1.123H12.75c-.25 0-.497.037-.732.107m5.218 4.893c.083.248.126.5.126.768v1.428a1.123 1.123 0 01-1.123 1.123H12.75c-.25 0-.497-.037-.732-.107M3.75 7.5c0-1.06.316-2.026.866-2.853M3.75 7.5V12m0 4.5V12m0 0H2.25m1.5 0H6m-2.25 0H3.75M3.75 12h16.5M20.25 7.5c0-1.06-.316-2.026-.866-2.853M20.25 7.5V12m0 4.5V12m0 0H21.75m-1.5 0H18m2.25 0H20.25M3.75 16.5c.948.748 2.134 1.25 3.414 1.25h6.826c1.134 0 2.177-.394 3-1.057" /></svg>`, bgColor: 'bg-amber-100', link: "#" },
-                { title: "Projetos Atuais", description: "Status e prazos dos projetos.", icon: `<svg class="h-6 w-6 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-3.741-5.582M12 15.75a3 3 0 01-3-3m3 3a3 3 0 00-3-3m3 3h.008M9.75 12a3 3 0 013-3m-3 3a3 3 0 00-3 3m3-3h.008m6.336 0a9.094 9.094 0 00-3.742-.479 3 3 0 00-3.742 5.582M9.002 15a9.094 9.094 0 003.742.479 3 3 0 003.742-5.582M12 12.75a3 3 0 01-3 3m3-3a3 3 0 00-3 3m3-3h.008M17.25 9a3 3 0 01-3-3m3 3a3 3 0 00-3-3m3 3h.008M12 9a3 3 0 01-3 3m3-3a3 3 0 00-3 3m3-3h.008M6.75 9a3 3 0 013-3m-3 3a3 3 0 003 3m-3 3H6.002m3 0A9.094 9.094 0 0112 5.272a9.094 9.094 0 013.002 1.055m-6.004 0A9.094 9.094 0 0012 5.272a9.094 9.094 0 003.002 1.055" /></svg>`, bgColor: 'bg-teal-100', link: "#" },
-                { title: "Recursos Humanos", description: "Folha de pagamento e dados.", icon: `<svg class="h-6 w-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`, bgColor: 'bg-purple-100', link: "#" },
-                { title: "Logística e Entregas", description: "Rastreamento e horários.", icon: `<svg class="h-6 w-6 text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>`, bgColor: 'bg-pink-100', link: "#" },
-                { title: "Relatórios Financeiros", description: "Balanços e DRE.", icon: `<svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>`, bgColor: 'bg-red-100', link: "#" },
-                { title: "Planeamento Estratégico", description: "Metas e OKRs anuais.", icon: `<svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18V7.875c0-.621.504-1.125 1.125-1.125H6.75m10.5-1.5H6.75m0 0H5.25m1.5 0v-1.5c0-.621.504-1.125 1.125-1.125h.375c.621 0 1.125.504 1.125 1.125v1.5m0 0H12m6.75-1.5h-1.5m1.5 0v-1.5c0-.621-.504-1.125-1.125-1.125h-.375a1.125 1.125 0 00-1.125 1.125v1.5m0 0H12" /></svg>`, bgColor: 'bg-yellow-100', link: "#" },
-                { title: "Feedback de Clientes", description: "Pesquisas e NPS.", icon: `<svg class="h-6 w-6 text-lime-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.646.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.333.183-.582.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`, bgColor: 'bg-lime-100', link: "#" },
-                { title: "Documentação Interna", description: "Manuais e processos.", icon: `<svg class="h-6 w-6 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.355a15.07 15.07 0 01-4.5 0m3.75-4.833c0-1.47-1.19-2.667-2.667-2.667h-1.666c-1.47 0-2.667 1.19-2.667 2.667M5.25 12.75c0 .621.504 1.125 1.125 1.125H6.75M18.75 12.75c0 .621-.504 1.125-1.125 1.125H17.25M12 3c-4.142 0-7.5 3.358-7.5 7.5 0 1.94.728 3.744 2.002 5.167M21.75 10.5c0-4.142-3.358-7.5-7.5-7.5S6.75 6.358 6.75 10.5c0 1.94.728 3.744 2.002 5.167" /></svg>`, bgColor: 'bg-cyan-100', link: "#" }
-            ];
-             // IMPORTANTE: Substitua os '#' nos links acima pelos URLs reais das suas planilhas.
-
-            cardData.forEach(data => {
-                const cardHTML = `
-                    <a href="${data.link}" target="_blank" rel="noopener noreferrer" class="card-link group block">
-                        <div class="card-content bg-white rounded-xl shadow-lg overflow-hidden p-6 h-full flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-center ${data.bgColor} rounded-full w-12 h-12 mb-4">
-                                    ${data.icon}
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-1">${data.title}</h3>
-                                <p class="text-sm text-gray-600 mb-3">${data.description}</p>
-                            </div>
-                            <div class="mt-auto">
-                                <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 group-hover:bg-green-100 transition-colors">
-                                    Aceder à Planilha &rarr;
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                `;
-                cardsGrid.innerHTML += cardHTML;
-            });
+            statusMessage.textContent = errorMessage;
+            showToast(errorMessage, 'error', 5000);
+            resetButtonState();
         }
 
-        // --- Lógica de Logout ---
-        logoutButton.addEventListener('click', function() {
-            // Limpar os dados do usuário do localStorage para simular o logout
-            localStorage.removeItem('userData');
-            localStorage.removeItem('currentUserForPasswordChange');
-            // Limpar campos de input
-            loginUsuarioInput.value = '';
-            loginSenhaInput.value = '';
-            newPasswordInput.value = '';
-            confirmPasswordInput.value = '';
-            // Mostrar a seção de login
-            checkAuthState();
-        });
-
-        // --- Inicialização ---
-        document.addEventListener('DOMContentLoaded', checkAuthState);
-
+        function resetButtonState() {
+            startButton.disabled = false;
+            startButton.classList.add('btn-primary');
+            startButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+        }
     </script>
+
 </body>
 </html>
